@@ -1,9 +1,10 @@
 {
-  "name": "softwares",
+  "name": "soql-parser",
   "author": "Vinícius França Lima Vilaça",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "1.0.1",
+  "description": "Build soql statements using query expressions similar to mongodb.",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "prepare": "npm run build",
     "prepublishOnly": "npm test && npm run lint",
@@ -11,9 +12,9 @@
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags",
     "build": "tsc",
-    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "format": "prettier --no-error-on-unmatched-pattern --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
-    "test": "jest --config jestconfig.json"
+    "test": "jest --runInBand --config jestconfig.json"
   },
   "keywords": [
     "soql",
@@ -40,5 +41,8 @@
   },
   "files": [
     "lib/**/*"
-  ]
+  ],
+  "dependencies": {
+    "moment": "^2.29.3"
+  }
 }

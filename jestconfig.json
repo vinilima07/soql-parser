@@ -1,7 +1,14 @@
 {
-  "transform": {
-    "^.+\\.(t|j)sx?$": "ts-jest"
+  "testEnvironment": "node",
+  "globals": {
+    "ts-jest": {
+      "isolatedModules": true
+    }
   },
-  "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-  "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"]
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "testRegex": "(/tests/.*|(\\.|/)(test|spec))\\.(js|ts)$",
+  "moduleFileExtensions": ["ts", "js"],
+  "modulePathIgnorePatterns": ["/lib"]
 }

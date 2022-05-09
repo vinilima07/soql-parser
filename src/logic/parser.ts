@@ -113,7 +113,7 @@ export class SOQLParser<ObjectScheme = any> {
       return ` ${field} ${SOQLParser.soqlComparisonOperator(operator)} '${value}' `;
     }
     // other type than primitives and array will not be accepted
-    else if (typeof value === 'object') {
+    else if (typeof value === 'object' && value != null) {
       SOQLParser.throwMalformedQuery(['Incorrect operator for value', operator, value]);
     } else {
       return ` ${field} ${SOQLParser.soqlComparisonOperator(operator)} ${value} `;
@@ -133,7 +133,7 @@ export class SOQLParser<ObjectScheme = any> {
 
       // normal matches without comparison operators, default is equality
       for (const [field, expOrValue] of Object.entries(queryExp)) {
-        if (typeof expOrValue === 'object' && isDate(expOrValue) == false) {
+        if (typeof expOrValue === 'object' && isDate(expOrValue) == false && expOrValue != null) {
           if (isEmptyObject(expOrValue)) {
             SOQLParser.throwMalformedQuery(['Incorrect operator value', field, expOrValue]);
           }

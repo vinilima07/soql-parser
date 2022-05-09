@@ -174,7 +174,7 @@ export class SOQLParser<ObjectScheme = any> {
    * @example { field: { $like: "value" } } -> field LIKE 'value'
    * @example { field: { $gt: 18 } } -> field > 18
    */
-  private queryToWhere(query: SOQLQuery<ObjectScheme>): string {
+  queryToWhere(query: SOQLQuery<ObjectScheme>): string {
     // if the query is empty just return empty where statement
     if (isEmptyObject(query)) {
       return '';

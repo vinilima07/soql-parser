@@ -174,7 +174,7 @@ export class SOQLParser<ObjectScheme = any> {
    * @example { field: { $like: "value" } } -> field LIKE 'value'
    * @example { field: { $gt: 18 } } -> field > 18
    */
-  queryToWhere(query: SOQLQuery<ObjectScheme>): string {
+  static queryToWhere<ObjectScheme = any>(query: SOQLQuery<ObjectScheme>): string {
     // if the query is empty just return empty where statement
     if (isEmptyObject(query)) {
       return '';
@@ -237,7 +237,7 @@ export class SOQLParser<ObjectScheme = any> {
    */
   build() {
     const { object, query, operation, fields, pagination } = this;
-    const where = this.queryToWhere(query);
+    const where = SOQLParser.queryToWhere(query);
 
     switch (operation) {
       case 'select': {

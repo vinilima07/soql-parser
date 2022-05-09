@@ -100,7 +100,17 @@ export class SOQLParser<ObjectScheme = any> {
   ) {
     if (operator === '$in' || operator === '$nin') {
       if (Array.isArray(value)) {
-        const values = value.map((v) => (typeof v === 'string' ? `'${v}'` : v)).join(',');
+        const values = value
+          .map((v) => {
+            if (typeof v === 'string') {
+              return `'${v}'`;
+            } else if (typeof v === 'object' && v != null) {
+              SOQLParser.throwMalformedQuery(['Operator value cannot be', operator, value]);
+            } else {
+              return v;
+            }
+          })
+          .join(',');
         return ` ${field} ${SOQLParser.soqlComparisonOperator(operator)} (${values}) `;
       } else {
         SOQLParser.throwMalformedQuery(`Operator ${operator} must has an array value.`);
@@ -133,23 +143,21 @@ export class SOQLParser<ObjectScheme = any> {
 
       // normal matches without comparison operators, default is equality
       for (const [field, expOrValue] of Object.entries(queryExp)) {
-        if (typeof expOrValue === 'object' && isDate(expOrValue) == false && expOrValue != null) {
+        // if the value is an array without comparison operatos, default is to use in to have a behavior of OR logical related to the field values
+        if (Array.isArray(expOrValue)) {
+          expressions.push(SOQLParser.createMatcher(field, expOrValue, '$in'));
+        } else if (
+          typeof expOrValue === 'object' &&
+          isDate(expOrValue) == false &&
+          expOrValue != null
+        ) {
           if (isEmptyObject(expOrValue)) {
             SOQLParser.throwMalformedQuery(['Incorrect operator value', field, expOrValue]);
           }
 
           // internal query matchers with comparison operators
           for (const [matcher, value] of Object.entries(expOrValue)) {
-            // if the type of the value is string, then we need to put cotes
-            if (typeof value === 'string') {
-              expressions.push(SOQLParser.createMatcher(field, value));
-            }
-            // if the value is an array we will accept multiple values for this field expression with $in operator
-            else if (Array.isArray(value)) {
-              expressions.push(SOQLParser.createMatcher(field, value, '$in'));
-            } else {
-              expressions.push(SOQLParser.createMatcher(field, value, matcher as any));
-            }
+            expressions.push(SOQLParser.createMatcher(field, value, matcher as any));
           }
         } else {
           expressions.push(SOQLParser.createMatcher(field, expOrValue));

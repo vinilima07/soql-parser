@@ -28,7 +28,7 @@ describe('Test Parser methods', () => {
       {
         test: 'Testing multiple higher level query expressions which should build a query correctly.',
         expectation: 'success',
-        where: `SELECTId,NameFROMObjectWHERE(((Name='%vini%'ANDAge__c>167)AND(Name='%franch%'))AND((Gender__c='female')OR(Gender__c='another')OR(Gender__c=null))AND(Id='123456789101112'))`,
+        where: `SELECTId,NameFROMObjectWHERE(((NameLIKE'%vini%'ANDAge__c>167)AND(NameLIKE'%franch%'))AND((Gender__c='female')OR(Gender__c='another')OR(Gender__c=null))AND(Id='123456789101112'))`,
         query: {
           $and: [
             { Name: { $like: '%vini%' }, Age__c: { $gt: 167 } },
@@ -41,7 +41,7 @@ describe('Test Parser methods', () => {
       {
         test: 'Testing comparison operator expressions which should build a query correctly',
         expectation: 'success',
-        where: `SELECTId,NameFROM${object}WHERE((IdIN('1','2')ANDNameIN('Vinicius','Dev')ANDEmail__c='%@%'ANDAge__c>1ANDDate_of_Birth__c>=1999-01-01T00:00:00.000ZANDWeight__c<160ANDHeight__c<=1.55ANDActivated__c=trueANDDeleted__c!=falseANDUpdatedAt__c=null))`,
+        where: `SELECTId,NameFROM${object}WHERE((IdIN('1','2')ANDNameNOTIN('Vinicius','Dev')ANDEmail__cLIKE'%@%'ANDAge__c>1ANDDate_of_Birth__c>=1999-01-01T00:00:00.000ZANDWeight__c<160ANDHeight__c<=1.55ANDActivated__c=trueANDDeleted__c!=falseANDUpdatedAt__c=null))`,
         query: {
           Id: { $in: ['1', '2'] },
           Name: { $nin: ['Vinicius', 'Dev'] },

@@ -2,7 +2,7 @@ import moment = require('moment');
 import { Pagination } from '../types/database';
 
 export function isEmptyObject(obj: any): boolean {
-  if (typeof obj === 'object') {
+  if (!!obj && typeof obj === 'object') {
     return Object.keys(obj).length === 0;
   }
 

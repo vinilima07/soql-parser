@@ -106,6 +106,8 @@ export class SOQLParser<ObjectScheme = any> {
               return `'${v}'`;
             } else if (typeof v === 'object' && v != null) {
               SOQLParser.throwMalformedQuery(['Operator value cannot be', operator, value]);
+            } else if (v === null) {
+              return "null";
             } else {
               return v;
             }

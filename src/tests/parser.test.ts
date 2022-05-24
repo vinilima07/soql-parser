@@ -41,9 +41,9 @@ describe('Test Parser methods', () => {
       {
         test: 'Testing comparison operator expressions which should build a query correctly',
         expectation: 'success',
-        where: `SELECTId,NameFROM${object}WHERE((IdIN('1','2')ANDNameNOTIN('Vinicius','Dev')ANDEmail__cLIKE'%@%'ANDAge__c>1ANDDate_of_Birth__c>=1999-01-01T00:00:00.000ZANDWeight__c<160ANDHeight__c<=1.55ANDActivated__c=trueANDDeleted__c!=falseANDUpdatedAt__c=null))`,
+        where: `SELECTId,NameFROM${object}WHERE((IdIN('1','2',3,null)ANDNameNOTIN('Vinicius','Dev')ANDEmail__cLIKE'%@%'ANDAge__c>1ANDDate_of_Birth__c>=1999-01-01T00:00:00.000ZANDWeight__c<160ANDHeight__c<=1.55ANDActivated__c=trueANDDeleted__c!=falseANDUpdatedAt__c=null))`,
         query: {
-          Id: { $in: ['1', '2'] },
+          Id: { $in: ['1', '2', 3, null] },
           Name: { $nin: ['Vinicius', 'Dev'] },
           Email__c: { $like: '%@%' },
           Age__c: { $gt: 1 },

@@ -28,7 +28,7 @@ describe('Test Parser methods', () => {
       {
         test: 'Testing multiple higher level query expressions which should build a query correctly.',
         expectation: 'success',
-        where: `SELECTId,NameFROMObjectWHERE(((NameLIKE'%vini%'ANDAge__c>167)AND(NameLIKE'%franch%'))AND((Gender__c='female')OR(Gender__c='another')OR(Gender__c=null))AND(Id='123456789101112'))`,
+        where: `SELECTId,NameFROM${object}WHERE((((NameLIKE'%vini%'ANDAge__c>167))AND((NameLIKE'%franch%')))AND(((Gender__c='female'))OR((Gender__c='another'))OR((Gender__c=null)))AND(Id='123456789101112'))`,
         query: {
           $and: [
             { Name: { $like: '%vini%' }, Age__c: { $gt: 167 } },
@@ -36,6 +36,19 @@ describe('Test Parser methods', () => {
           ],
           $or: [{ Gender__c: 'female' }, { Gender__c: 'another' }, { Gender__c: null }],
           Id: '123456789101112',
+        },
+      },
+      {
+        test: 'Testing multiple and deepest higher level query expressions which should build a query correctly.',
+        expectation: 'success',
+        where: `SELECTId,NameFROM${object}WHERE((((((NameLIKE'%Test%'))OR((litify_pm__Last_Name__cLIKE'%TI%')))))AND(((litify_pm_First_Name__c='Vinicius'))OR((litify_pm__First_Name__c='João'))))`,
+        query: {
+          $and: [
+            {
+              $or: [{ Name: { $like: '%Test%' } }, { litify_pm__Last_Name__c: { $like: '%TI%' } }],
+            },
+          ],
+          $or: [{ litify_pm_First_Name__c: 'Vinicius' }, { litify_pm__First_Name__c: 'João' }],
         },
       },
       {

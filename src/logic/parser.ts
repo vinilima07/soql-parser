@@ -78,7 +78,8 @@ export class SOQLParser<ObjectScheme = any> {
       sort = `ORDER BY ${pagination.sort} ASC`;
     }
 
-    return `SELECT ${fields.join(',')} FROM ${object} ${where} ${sort} ${cursorPosition}`;
+    // prettier-ignore
+    return `SELECT ${fields.join(',')} FROM ${object} ${where ?  ` WHERE ${where} ` : '' } ${sort} ${cursorPosition}`;
   }
 
   private static throwMalformedQuery(reason: any): never {
@@ -185,19 +186,15 @@ export class SOQLParser<ObjectScheme = any> {
     const { $and, $or, ...filters } = query;
     const whereConditions: string[] = [];
 
-    if (Array.isArray(query.$and)) {
+    if (Array.isArray(query.$and) && query.$and.length > 0) {
       whereConditions.push(
-        SOQLParser.joinAndExpressions(
-          query.$and.map((queryExp) => SOQLParser.createExpressions(queryExp)),
-        ),
+        SOQLParser.joinAndExpressions(query.$and.map((queryExp) => this.queryToWhere(queryExp))),
       );
     }
 
-    if (Array.isArray(query.$or)) {
+    if (Array.isArray(query.$or) && query.$or.length > 0) {
       whereConditions.push(
-        SOQLParser.joinOrExpressions(
-          query.$or.map((queryExp) => SOQLParser.createExpressions(queryExp)),
-        ),
+        SOQLParser.joinOrExpressions(query.$or.map((queryExp) => this.queryToWhere(queryExp))),
       );
     }
 
@@ -206,7 +203,7 @@ export class SOQLParser<ObjectScheme = any> {
     }
 
     if (whereConditions.length > 0) {
-      return ` WHERE ${SOQLParser.joinAndExpressions(whereConditions)} `;
+      return SOQLParser.joinAndExpressions(whereConditions);
     } else {
       return '';
     }

@@ -27,8 +27,8 @@ export type SOQLQueryExp<T = any> = {
 };
 
 export type SOQLQuery<T = any> = {
-  $and?: SOQLQueryExp<T>[];
-  $or?: SOQLQueryExp<T>[];
+  $and?: (SOQLQuery | SOQLQueryExp<T>)[];
+  $or?: (SOQLQuery | SOQLQueryExp<T>)[];
 } & SOQLQueryExp<T>;
 
 export interface SOQLStmt {

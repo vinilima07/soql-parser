@@ -75,11 +75,22 @@ export class SOQLParser<ObjectScheme = any> {
     }
 
     if (pagination?.sort) {
-      sort = `ORDER BY ${pagination.sort} ASC`;
+      const { sortField, order } = SOQLParser.orderFromSort(pagination?.sort);
+      sort = `ORDER BY ${sortField} ${order}`;
     }
 
     // prettier-ignore
     return `SELECT ${fields.join(',')} FROM ${object} ${where ?  ` WHERE ${where} ` : '' } ${sort} ${cursorPosition}`;
+  }
+
+  private static orderFromSort(sort: string) {
+    if (sort?.charAt(0) === '-') {
+      return { sortField: sort?.slice(1), order: 'DESC' };
+    }
+    if (sort?.charAt(0) === '+') {
+      return { sortField: sort?.slice(1), order: 'ASC' };
+    }
+    return { sortField: sort, order: 'ASC' };
   }
 
   private static throwMalformedQuery(reason: any): never {

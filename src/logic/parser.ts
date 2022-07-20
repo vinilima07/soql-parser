@@ -87,6 +87,9 @@ export class SOQLParser<ObjectScheme = any> {
     if (sort?.charAt(0) === '-') {
       return { sortField: sort?.slice(1), order: 'DESC' };
     }
+    if (sort?.charAt(0) === '+') {
+      return { sortField: sort?.slice(1), order: 'ASC' };
+    }
     return { sortField: sort, order: 'ASC' };
   }
 
